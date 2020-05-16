@@ -12,6 +12,13 @@ var budgetController = (function () {
         this.value = value;
     }
 
+    var calculateTotal = function (type) { //type is either income or expense
+        var sum = 0;
+        data.store[type].forEach((current) => { //current refers to either the income or expense
+            sum = sum + current.value
+        })
+    }
+
     var data = {
         store: {
             exp: [],
@@ -40,6 +47,13 @@ var budgetController = (function () {
             data.store[type].push(newItem)
             return newItem;
         },
+        calculateBudget: function () {
+            //calculate total income and expenses
+
+            //calculate the budget : income - expenses
+
+            //calculte the percentage of income spent
+        },
         testing: function () {
             console.log(data)
         }
@@ -64,7 +78,7 @@ let UIController = (function () {
             return {
                 type: document.querySelector(DOMStrings.inputType).value,
                 description: document.querySelector(DOMStrings.inputDesc).value,
-                value: document.querySelector(DOMStrings.inputValue).value
+                value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
             }
         },
         addListItem: function (obj, type) {
@@ -117,22 +131,31 @@ let controller = (function (budgetctlr, UICtrl) {
             }
         })
     }
+    var updateBudget = function () {
+        //1. Calculate the budget
+
+        // 2.return the budget
+
+        //3.Display the budget on the UI
+
+
+    };
 
     function addCtrlItem() {
 
         //1. get the field input data
         var addedInput = UICtrl.addingInput()
 
-        //2.Add item to the budget controller
-        var newInput = budgetctlr.addItem(addedInput.type, addedInput.description, addedInput.value)
-        //3.add item to UI
-        UICtrl.addListItem(newInput, addedInput.type)
-        //For cler the fields
-        UICtrl.clearFields()
-        //4. Calculate the budget
-
-        //5.Display the budget on the UI
-
+        if (addedInput.description !== "" && !isNaN(addedInput.value) && addedInput.value > 0) {
+            //2.Add item to the budget controller
+            var newInput = budgetctlr.addItem(addedInput.type, addedInput.description, addedInput.value)
+            //3.add item to UI
+            UICtrl.addListItem(newInput, addedInput.type)
+            //For cler the fields
+            UICtrl.clearFields()
+            //Calculate and update budget
+            updateBudget();
+        }
 
     };
     return {
