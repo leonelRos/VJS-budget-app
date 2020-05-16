@@ -15,10 +15,11 @@ var budgetController = (function () {
     var calculateTotal = function (type) { //type is either income or expense
         var sum = 0;
         data.store[type].forEach((current) => { //current refers to either the income or expense
-            sum = sum + current.value
-        })
+            sum += current.value
+        });
+        data.totals[type] = sum
     }
-
+    //we are store everything insie our data
     var data = {
         store: {
             exp: [],
@@ -27,7 +28,9 @@ var budgetController = (function () {
         totals: {
             exp: 0,
             inc: 0
-        }
+        },
+        budget: 0,
+        percentage: -1
     };
     return {
         addItem: function (type, des, val) {
@@ -49,10 +52,26 @@ var budgetController = (function () {
         },
         calculateBudget: function () {
             //calculate total income and expenses
-
+            calculateTotal('exp')
+            calculateTotal('inc')
             //calculate the budget : income - expenses
-
+            data.budget = data.totals.inc - data.totals.exp
             //calculte the percentage of income spent
+            if (data.totals.inc > 0) {
+                data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100)
+            } else {
+                data.percentage = -1
+            }
+
+        },
+
+        getBudget: function () {
+            return {
+                budget: data.budget,
+                totalInc: data.totals.inc,
+                totalExp: data.totals.exp,
+                percentage: data.percentage
+            }
         },
         testing: function () {
             console.log(data)
@@ -69,7 +88,11 @@ let UIController = (function () {
         inputValue: '.add__value',
         inputBtn: '.add__btn',
         incomeContainer: '.income__list',
-        expenseContainer: '.expenses__list'
+        expenseContainer: '.expenses__list',
+        budgetLabel: '.budget__value',
+        incomeLabel: '.budget__income--value',
+        expenseLabel: '.budget__expenses--value',
+        percentageLabel: ".budget__expenses--percentage"
 
     }
 
@@ -111,6 +134,20 @@ let UIController = (function () {
             });
             fieldsArr[0].focus()
         },
+        displayBudget: function (obj) {
+
+            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget
+            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc
+            document.querySelector(DOMStrings.expenseLabel).textContent = obj.totalExp
+
+            if (obj.percentage > 0) {
+                document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + " %"
+
+            } else {
+                document.querySelector(DOMStrings.percentageLabel).textContent = "--"
+
+            }
+        },
         getDOMstrings: function () {
             return DOMStrings;
         }
@@ -133,11 +170,11 @@ let controller = (function (budgetctlr, UICtrl) {
     }
     var updateBudget = function () {
         //1. Calculate the budget
-
+        budgetctlr.calculateBudget();
         // 2.return the budget
-
+        var budget = budgetController.getBudget();
         //3.Display the budget on the UI
-
+        UICtrl.displayBudget(budget);
 
     };
 
@@ -161,6 +198,14 @@ let controller = (function (budgetctlr, UICtrl) {
     return {
         init: function () {
             console.log("the app started.")
+            UICtrl.displayBudget({
+
+                budget: 0,
+                totalInc: 0,
+                totalExp: 0,
+                percentage: -1
+
+            });
             setupEventListInit()
 
         }
