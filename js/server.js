@@ -74,7 +74,9 @@ var budgetController = (function () {
             }
 
         },
+        calculatePercentages: function () {
 
+        },
         getBudget: function () {
             return {
                 budget: data.budget,
@@ -83,6 +85,7 @@ var budgetController = (function () {
                 percentage: data.percentage
             }
         },
+
         testing: function () {
             console.log(data)
         }
@@ -194,8 +197,15 @@ let controller = (function (budgetCtlr, UICtrl) {
         UICtrl.displayBudget(budget);
 
     };
+    var updatePercentage = function () {
+        // 1. calculate percentages
 
-    function addCtrlItem() {
+        //2. read percentages from budget controller
+
+        //3.Updating UI with new percentages
+
+    }
+    var addCtrlItem = function () {
 
         //1. get the field input data
         var addedInput = UICtrl.addingInput()
@@ -209,6 +219,8 @@ let controller = (function (budgetCtlr, UICtrl) {
             UICtrl.clearFields()
             //Calculate and update budget
             updateBudget();
+            //6. calculate and update percentages
+            updatePercentage();
         }
 
     };
@@ -225,6 +237,8 @@ let controller = (function (budgetCtlr, UICtrl) {
             UICtrl.deleteListItem(itemID);
             //3. update and show the new budget
             updateBudget();
+            //4. calculate and update percentages
+            updatePercentage();
         }
     };
     return {
