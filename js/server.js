@@ -128,7 +128,8 @@ let UIController = (function () {
         expenseLabel: '.budget__expenses--value',
         percentageLabel: ".budget__expenses--percentage",
         container: '.container',
-        expensePercLabel: '.item__percentage'
+        expensePercLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
 
     }
 
@@ -147,6 +148,13 @@ let UIController = (function () {
         var dec = numSplit[1]
         return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec
 
+    };
+
+    var NodeListForEach = function (list, callback) {
+        for (var i = 0; i < list.length; i++) {
+            //we are passing (current = list[i] and index = i)
+            callback(list[i], i)
+        }
     };
 
     return {
@@ -209,12 +217,6 @@ let UIController = (function () {
         },
         displayPercentage: function (percentages) {
             var fields = document.querySelectorAll(DOMStrings.expensePercLabel);
-            var NodeListForEach = function (list, callback) {
-                for (var i = 0; i < list.length; i++) {
-                    //we are passing (current = list[i] and index = i)
-                    callback(list[i], i)
-                }
-            };
 
             NodeListForEach(fields, function (current, index) {
                 if (percentages[index] > 0) {
@@ -226,6 +228,20 @@ let UIController = (function () {
         },
         displayMonth: function () {
             var now = new Date();
+
+            var months = ['January', 'Febraury', 'March', 'April', 'May', 'June', 'July', "August", 'September', 'October', 'Novemeber', 'December']
+            var month = now.getMonth()
+            var year = now.getFullYear()
+            document.querySelector(DOMStrings.dateLabel).textContent = months[month] + ' ' + year;
+        },
+        changeType: function () {
+            var fields = document.querySelectorAll(
+                DOMStrings.inputType + ',' + DOMStrings.inputDesc + ',' + DOMStrings.inputValue
+            )
+            NodeListForEach(fields, function (current) {
+                current.classList.toggle('red-focus')
+            });
+            document.querySelector(DOMStrings.inputBtn).classList.toggle('red')
         },
         getDOMstrings: function () {
             return DOMStrings;
@@ -248,6 +264,7 @@ let controller = (function (budgetCtlr, UICtrl) {
         });
 
         document.querySelector(DOM.container).addEventListener('click', controlDeleteItem)
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changeType)
     }
     var updateBudget = function () {
         //1. Calculate the budget
@@ -305,6 +322,7 @@ let controller = (function (budgetCtlr, UICtrl) {
     return {
         init: function () {
             console.log("the app started.")
+            UICtrl.displayMonth()
             UICtrl.displayBudget({
 
                 budget: 0,
