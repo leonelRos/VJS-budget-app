@@ -106,7 +106,6 @@ var budgetController = (function () {
                 percentage: data.percentage
             }
         },
-
         testing: function () {
             console.log(data)
         }
@@ -130,7 +129,6 @@ let UIController = (function () {
         container: '.container',
         expensePercLabel: '.item__percentage',
         dateLabel: '.budget__title--month'
-
     }
 
     var formatNumber = function (num, type) {
