@@ -1,5 +1,5 @@
 var budgetController = (function () {
-
+    //object constructor Expense and Income
     var Expense = function (id, description, value) {
         this.id = id;
         this.description = description;
