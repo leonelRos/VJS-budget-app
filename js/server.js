@@ -245,7 +245,6 @@ let UIController = (function () {
             return DOMStrings;
         }
     }
-
 })();
 
 //GLOBAL APP CONTROLLER
